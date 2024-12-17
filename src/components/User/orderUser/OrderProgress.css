@@ -1,0 +1,36 @@
+.order-progress-container {
+    padding: 20px;
+    max-width: 700px;
+    background-color: #f5ecec;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+  }
+  
+  .ant-steps-item-title {
+    font-size: 14px;
+    color: #2c3e50;
+  }
+  
+  .ant-steps-item-finish .ant-steps-item-title {
+    color: #52c41a; /* Màu xanh cho bước hoàn thành */
+  }
+  
+  .ant-steps-item-process .ant-steps-item-title {
+    font-weight: bold;
+    color: #ff1878; 
+  }
+  
+  .ant-steps-item-wait .ant-steps-item-title {
+    color: #bfbfbf; /* Màu xám cho bước chưa hoàn thành */
+  }
+
+  .link-orderdetail{
+    border: 1px solid #2c3e50;
+    padding: 10px 20px;
+    border-radius: 10px;
+    background-color: crimson;
+    color:rgb(255, 255, 255);
+  }
+
+  

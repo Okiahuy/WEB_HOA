@@ -1,0 +1,13 @@
+.Sider-producthome{
+    border-radius: 10px;
+    color: aliceblue;
+    background-color: rgb(58, 57, 57);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+}
+.ul-producthome:hover{
+    color: rgb(245, 59, 59);
+    background-color: rgb(214, 212, 212);
+}
+
