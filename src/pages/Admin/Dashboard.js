@@ -1,23 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Card, Statistic, Spin, Alert } from 'antd';
-import { ShoppingCartOutlined, UserOutlined, HeartOutlined, MoneyCollectOutlined } from '@ant-design/icons';
-import { XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, LineChart,Line} from 'recharts';
+import { Row, Col, Card, Spin, Alert, Table } from 'antd';
+import {  HeartFilled,DollarOutlined,UserOutlined } from '@ant-design/icons';
+import {  ResponsiveContainer } from 'recharts';
 import statisticService from '../../services/statisticService';
 // Dữ liệu mẫu cho biểu đồ npm install recharts
-
-const data = [
-  { date: '2024-10-15', products: 120, customers: 200, favorites: 350 },
-  { date: '2024-10-16', products: 130, customers: 220, favorites: 330 },
-  { date: '2024-10-17', products: 140, customers: 180, favorites: 370 },
-  { date: '2024-10-18', products: 150, customers: 250, favorites: 360 },
-  { date: '2024-10-19', products: 160, customers: 230, favorites: 380 },
-];
 
 const Dashboard = () => {
   const [productCount, setProducts] = useState([]);
   const [favoriteCount, setfavoriteCounts] = useState([]);
   const [totalUsers, settotalUsers] = useState([]);
   const [totalPrice, settotalPrices] = useState([]);
+  const [totalAccess, settotalAccess] = useState([]);
+  const [cpuavg, setcpuavgs] = useState([]);
+  const [mid, setmids] = useState();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -28,17 +23,8 @@ const Dashboard = () => {
         const response = await statisticService.statistics();
         console.log(response);  // Log toàn bộ phản hồi API
         const data = response;
-        
-        // Log cụ thể dữ liệu trả về từ API
-        console.log('Dữ liệu trả về từ API:', data);
-  
         if (data) {
-          // Kiểm tra từng thuộc tính
-          console.log('totalProducts:', data.totalProducts);
-          console.log('totalLikes:', data.totalLikes);
-          console.log('totalUsers:', data.totalUsers);
-          console.log('totalPrice:', data.totalPrice);
-  
+         
           // Gán giá trị vào state nếu tất cả đều hợp lệ
           if (typeof data.totalProducts === 'number' && 
               typeof data.totalLikes === 'number' &&
@@ -63,10 +49,47 @@ const Dashboard = () => {
   
     fetchStatistics();
   }, []);
+
+  useEffect(() => {
+    const fetchMiddlewares = async () => {
+      setLoading(true);
+      try {
+        const response = await statisticService.Middleware();
+        console.log(response);  // Log toàn bộ phản hồi API
+        const data = response;
+        if (data) {
+          // Gán giá trị vào state nếu tất cả đều hợp lệ
+          setmids(response.data);
+          if (
+              typeof data.totalAccess === 'number' &&
+              typeof data.cpuavg === 'number') {
+                settotalAccess(data.totalAccess);
+                setcpuavgs(data.cpuavg);
+          } else {
+            throw new Error('Dữ liệu không hợp lệ - Một số thuộc tính không đúng định dạng');
+          }
+        } else {
+          throw new Error('Dữ liệu không hợp lệ');
+        }
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchMiddlewares();
+  }, []);
   
   
-  
-  
+  const columns = [
+    { title: 'STT', dataIndex: 'id', key: 'id' },
+    { title: 'Tên api', dataIndex: 'apiName', key: 'apiName' },
+    { title: 'Lượt truy cập', dataIndex: 'requestCount', key: 'requestCount' },
+    { title: 'Trạng thái', dataIndex: 'status', key: 'status' },
+    { title: 'CUP', dataIndex: 'cpuUsage', key: 'cpuUsage' },
+    { title: 'Thời gian', dataIndex: 'requestTime', key: 'requestTime' },
+];
 
 
   if (loading) {
@@ -86,80 +109,63 @@ const Dashboard = () => {
       <Row gutter={[16, 16]}>
       {/* Thống kê số lượng sản phẩm */}
       <Col span={6}>
-        <Card style={{ backgroundColor: '#f0f2f5', borderColor: '#1890ff' }}>
-          <Statistic
-            title="Sản phẩm"
-            value={productCount || 0}
-            prefix={<ShoppingCartOutlined />}
-          />
+        <Card style={{ backgroundColor: '#2c3e50', borderColor: '#1890ff' , color: 'white', fontSize:'20px' }}>
+          <p>Tổng sản phẩm</p>
+          <p>{productCount} 🌸</p>
         </Card>
       </Col>
 
       {/* Thống kê số lượng khách hàng */}
       <Col span={6}>
-        <Card style={{ backgroundColor: '#fff7e6', borderColor: '#faad14' }}>
-          <Statistic
-            title="Khách hàng"
-            value={totalUsers || 0}
-            prefix={<UserOutlined />}
-          />
+        <Card style={{ backgroundColor: '#2c3e50', borderColor: '#faad14', color: 'white', fontSize:'20px'  }}>
+          <p>Tổng khách hàng</p>
+          <p>{totalUsers} <UserOutlined style={{ color: 'red' }}/></p>
         </Card>
       </Col>
 
       {/* Thống kê số lượt yêu thích */}
       <Col span={6}>
-        <Card style={{ backgroundColor: '#e6ffed', borderColor: '#52c41a' }}>
-          <Statistic
-            title="Lượt yêu thích"
-            value={favoriteCount || 0}
-            prefix={<HeartOutlined />}
-          />
+        <Card style={{ backgroundColor: '#2c3e50', borderColor: '#52c41a', color: 'white', fontSize:'20px'  }}>
+          <p>Tổng lượt thích</p>
+          <p>{favoriteCount } <HeartFilled style={{ color: 'red' }} /> </p>
         </Card>
       </Col>
 
       {/* Thống kê tổng doanh thu */}
       <Col span={6}>
-        <Card style={{ backgroundColor: '#fff1f0', borderColor: '#ff4d4f' }}>
-          <Statistic
-            title="Doanh thu"
-            value={totalPrice || 0}
-            prefix={<MoneyCollectOutlined />}
-          />
+        <Card style={{ backgroundColor: '#2c3e50', borderColor: '#ff4d4f', color: 'white', fontSize:'20px'  }}>
+          <p>Tổng doanh thu</p>
+          <p>{totalPrice.toLocaleString()} <DollarOutlined style={{ color: 'yellow' }} /> </p>
         </Card>
       </Col>
     </Row>
 
-
     
+    <Row gutter={[16, 16]}>
+      <Col span={10}>
+        <h2 style={{ marginTop: '24px' }}>Các Request</h2>
+        <ResponsiveContainer width="100%" height={300}>
+          <Table dataSource={mid} rowKey="id" columns={columns}  pagination={false} scroll={{ y: 300 }} bordered/>
+        </ResponsiveContainer>
+      </Col>
 
-      <h2 style={{ marginTop: '24px' }}>Thống kê doanh thu</h2>
-      <ResponsiveContainer width="100%" height={300}>
-        <LineChart data={data}>
-          <XAxis dataKey="date" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Line dataKey="products" fill="#1890ff" name="Sản phẩm" />
-          <Line dataKey="customers" fill="#faad14" name="Khách hàng" />
-          <Line dataKey="favorites" fill="#52c41a" name="Lượt yêu thích" />
-        </LineChart>
-      </ResponsiveContainer>
-      
-
-  {/* Biểu đồ thống kê
-  <h2 style={{ marginTop: '24px' }}>Thống kê theo ngày</h2>
-      <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={data}>
-          <XAxis dataKey="date" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Bar dataKey="products" fill="#1890ff" name="Sản phẩm" />
-          <Bar dataKey="customers" fill="#faad14" name="Khách hàng" />
-          <Bar dataKey="favorites" fill="#52c41a" name="Lượt yêu thích" />
-        </BarChart>
-      </ResponsiveContainer>
- */}
+      <Col span={7} >
+        <h2 style={{ marginTop: '24px' }}>Tổng lượt truy cập</h2>
+        <ResponsiveContainer width="100%" height={300}>
+          <Card style={{ backgroundColor: '#2c3e50', borderColor: 'white', width:'300px',  height:'300px', color: 'white', fontSize:'25px',borderRadius:'50%',textAlign:'center',alignContent:'center' }}>
+            <p>{totalAccess.toLocaleString()} lượt</p>
+          </Card>
+        </ResponsiveContainer>
+      </Col>
+      <Col span={7}>
+        <h2 style={{ marginTop: '24px' }}>Mức sử dụng CPU trung bình</h2>
+        <ResponsiveContainer width="100%" height={300}>
+          <Card style={{ backgroundColor: '#2c3e50', borderColor: 'white', width:'300px', height:'300px', color: 'white', fontSize:'25px',borderRadius:'50%',textAlign:'center',alignContent:'center'  }}>
+              <p>{cpuavg.toLocaleString()} %</p>
+            </Card>
+        </ResponsiveContainer>
+      </Col>
+    </Row>
 
 
     </div>

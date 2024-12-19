@@ -32,6 +32,24 @@ const statisticService = {
         throw error;
     }
 },
+Middleware: async () => {
+    try {
+        const response = await axios.get(`${API_URL}/getMiddleware`, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${user.token}`, 
+            },
+        });
+        return response.data; 
+    } catch (error) {
+        if (error.response) {
+          console.error("Có lỗi khi getMiddleware :", error.response.data);
+        } else {
+            console.error("Có lỗi khi getMiddleware:", error);
+        }
+        throw error;
+    }
+},
 
 };
 

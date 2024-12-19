@@ -97,6 +97,7 @@ const TypeManager = () =>{
                 onCancel={closeModal}
                 initialValues={editingType}
             />
+            
         </div>
     );
 };

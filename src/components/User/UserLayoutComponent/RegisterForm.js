@@ -18,7 +18,7 @@ const onFinish = async (values) => {
     } catch (error) {
         setLoading(false);
         if (error.response) {
-            message.error(error.response.data.message || 'Đăng ký thất bại');
+            message.error(error.response.data.error || 'Đăng ký thất bại');
         } else {
             message.error('Có lỗi xảy ra. Vui lòng thử lại.');
         }
@@ -29,7 +29,7 @@ if (loading) {
   }
 
 return (
-    <div style={{ maxWidth: 300, margin: '0 auto', padding: '50px' }}>
+    <div style={{ maxWidth: 500, margin: '0 auto', padding: '50px' }}>
     <h2>Đăng ký tài khoản</h2>
             <Form
                 form={form}
@@ -37,18 +37,23 @@ return (
                 initialValues={{ remember: true }}
                 onFinish={onFinish}
              >
+                <h4>Tên đăng nhập</h4>
                 <Form.Item
+                
                     name="username"
                     rules={[{ required: true, message: 'Vui lòng nhập tên đăng nhập!' }]}
                 >
                     <Input placeholder="Tên đăng nhập" />
                 </Form.Item>
+
+                <h4>Họ & Tên</h4>
                 <Form.Item
                     name="fullName"
                     rules={[{ required: true, message: 'Vui lòng nhập Họ & Tên!' }]}
                 >
                     <Input placeholder="Họ & Tên" />
                 </Form.Item>
+                <h4>Email</h4>
                 <Form.Item
                     name="email"
                     rules={[
@@ -58,20 +63,27 @@ return (
                 >
                     <Input placeholder="Email" />
                 </Form.Item>
+                <h4>Số điện thoại</h4>
                 <Form.Item
                     name="phone"
-                    rules={[{ required: true, message: 'Số điện thoại!' }]}
+                    rules={[{ required: true, message: 'Số điện thoại!' },
+                            { min: 10, message: 'Số điện thoại phải 10 ký tự' },
+                            { max: 10, message: 'Số điện thoại phải 10 ký tự' },
+                    ]}
                 >
                     <Input placeholder="Số điện thoại" />
                 </Form.Item>
+                <h4>Mật khẩu</h4>
                 <Form.Item
                     name="password"
-                    rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}
+                    rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' },
+                            { min: 5, message: 'Mật khẩu phải từ 5 ký tự' },
+                    ]}
                     hasFeedback
                 >
                     <Input.Password placeholder="Mật khẩu" />
                 </Form.Item>
-
+                <h4>Nhập lại mật khẩu</h4>
                 <Form.Item
                     name="password2"
                     dependencies={['password']}

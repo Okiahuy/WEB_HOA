@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import AccountService from '../../../services/accountService';
-import { Input, Form, message, Spin, Alert, Button } from 'antd';
+import { Input, Form, message, Spin, Alert } from 'antd';
 import AddressUser from './AddressUser';
 
 const UserInfo = () => {
@@ -8,7 +8,7 @@ const UserInfo = () => {
   const [error, setError] = useState(null);
   const [userInfo, setUserInfo] = useState([]);
 
-  const isGoogleUser = userInfo && userInfo[0]?.password === "IsGoogle";
+  // const isGoogleUser = userInfo && userInfo[0]?.password === "IsGoogle";
   const user = JSON.parse(localStorage.getItem('user')); // Lấy thông tin người dùng từ localStorage
   const accountID = user?.accountID;
   if (user) {
@@ -65,7 +65,7 @@ const UserInfo = () => {
             <Input defaultValue={userInfo[0].phone || "Chưa có"} />
           </Form.Item>
           {/* Conditionally show the password field and update button */}
-          {!isGoogleUser && (
+          {/* {!isGoogleUser && (
             <>
               <Form.Item label="Mật khẩu mới" name="newPassword">
                 <Input.Password />
@@ -81,7 +81,7 @@ const UserInfo = () => {
                 </Button>
               </Form.Item>
               </>
-          )}
+          )} */}
       </Form>
     {/* Hiện thông tiin điiịa chiir */}
       <AddressUser/>

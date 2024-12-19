@@ -10,6 +10,7 @@ import HealthCheck from '../components/Admin/HealthCheck/HealthCheck';
 import OrderList from '../components/Admin/OrderAdmin/OrderList';
 import OrderPrintPage from '../components/Admin/OrderAdmin/OrderPrintPage';
 import TypeAdmin from '../pages/Admin/TypeAdmin';
+import CustomerAdmin from '../pages/Admin/CustomerAdmin';
 
 const AdminRoutes = () => {
   return (
@@ -17,6 +18,7 @@ const AdminRoutes = () => {
       <Route path="dashboard" element={<Dashboard />} />
       <Route path="users" element={<ManageUsers />} />
       <Route path="supplier" element={<SupplierAdmin />} />
+      <Route path="customer" element={<CustomerAdmin />} />
       <Route path="productlist-hoa" element={<AdminProductList />} />
       <Route path="productlist-dungcu" element={<AdminProductListdungcu />} />
       <Route path="healthcheck-product" element={<HealthCheck />} />
