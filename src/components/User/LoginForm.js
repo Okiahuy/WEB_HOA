@@ -74,12 +74,13 @@ const handleGoogleLogin = (response) => {
         // Kiểm tra dữ liệu phản hồi từ server
         const {accountID, fullName, roleID, email, token, totalItems } = data || {};
 
-        if (!accountID || !fullName || !email || !token || !totalItems) {
+        if (!accountID || !fullName || !roleID|| !email || !token || totalItems === undefined) {
+          console.log(JSON.stringify({accountID, fullName, roleID, email, token, totalItems }));
           throw new Error('Dữ liệu trả về từ server không hợp lệ');
         }
 
         // Lưu thông tin người dùng vào LocalStorage
-        localStorage.setItem('user',JSON.stringify({accountID, fullName, roleID, email, token,totalItems })
+        localStorage.setItem('user',JSON.stringify({accountID, fullName, roleID, email, token, totalItems })
         );
 
         message.success('Đăng nhập thành công!');

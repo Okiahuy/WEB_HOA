@@ -50,6 +50,24 @@ Middleware: async () => {
         throw error;
     }
 },
+GetInvoice: async () => {
+    try {
+        const response = await axios.get(`${API_URL}/GetInvoice`, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${user.token}`, 
+            },
+        });
+        return response.data; 
+    } catch (error) {
+        if (error.response) {
+          console.error("Có lỗi khi GetInvoice :", error.response.data);
+        } else {
+            console.error("Có lỗi khi GetInvoice:", error);
+        }
+        throw error;
+    }
+},
 
 };
 

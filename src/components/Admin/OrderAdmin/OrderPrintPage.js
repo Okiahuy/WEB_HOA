@@ -152,7 +152,8 @@ const OrderPrintPage = () => {
             <Button
                 style={{ color: 'green' ,width: '100px', height:'100px', border: '1px solid green'}}
                 onClick={handlePrint}
-            ><PrinterOutlined style={{ color: 'green', fontSize: '50px'  }}/></Button>
+            ><PrinterOutlined style={{ color: 'green', fontSize: '50px'  }}/>
+            </Button>
         </div>
   );
 };

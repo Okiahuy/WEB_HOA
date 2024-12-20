@@ -14,6 +14,7 @@ import ProductHome from '../pages/User/Product';
 import OrderDetail from '../components/User/orderUser/OrderDetail';
 import Notification from '../components/User/newpaper/Notification';
 import RegisterForm from '../components/User/UserLayoutComponent/RegisterForm';
+import Infoweb from '../pages/User/Infoweb';
 
 
 const UserRoutes = () => {
@@ -28,7 +29,9 @@ const UserRoutes = () => {
          {/* đăng nhập */}
         <Route path="/login" element={<LoginForm />} />
          {/* đăng ký */}
-         <Route path="/register" element={<RegisterForm />} />
+        <Route path="/register" element={<RegisterForm />} />
+        {/* thông tin về web */}
+        <Route path="/infoweb" element={<Infoweb />} />
          {/* giới thiệu */}
         <Route path="/about" element={<AboutUser />} />
         {/* tin tức */}

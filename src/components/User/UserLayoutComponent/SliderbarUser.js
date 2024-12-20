@@ -35,9 +35,9 @@ const SliderbarUser = () => {
             </Link>
           </Col>
           <Col xs={24} md={6} className="Slider-info-item">
-            <Link to="/editProfile">
-              <img src={thongtin} alt="Đổi thông tin" className="Slider-info-icon" loading="lazy"/>
-              <Title level={4} className="Slider-info-item">Đổi thông tin</Title>
+            <Link to="/infoweb">
+              <img src={thongtin} alt="Thông tin về web" className="Slider-info-icon" loading="lazy"/>
+              <Title level={4} className="Slider-info-item">Thông tin về web</Title>
             </Link>
           </Col>
         </Row>

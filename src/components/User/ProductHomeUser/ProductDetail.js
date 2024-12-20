@@ -1,27 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Col, Descriptions, Row, Button, Spin, Alert, message } from 'antd';
+import { Card, Col, Descriptions, Row, Button, Spin, message, Form, Input } from 'antd';
 import productService from '../../../services/productService';
 import { useParams } from 'react-router-dom'; // To get the product ID from the URL
 import { DollarOutlined, HeartOutlined, HeartFilled, ShoppingCartOutlined, FileTextOutlined, LoginOutlined} from '@ant-design/icons';
 import Service from '../about/service';
 import FavoriteService from '../../../services/favoriteService';
-import ProductHomeUserComponentDocla from './ProductHomeUserComponentDocla';
+import AccountService from '../../../services/accountService';
 import { Rate } from 'antd';
 
 import CartService from '../../../services/cartService';
 
 const ProductDetail = () => {
   const [product, setProduct] = useState(null);
+  const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { id } = useParams();  
   const [isFavorite, setIsFavorite] = useState(false);
-
+  const [descriptionAnswer, setDescriptionAnswer] = useState('');
+  const [form] = Form.useForm();
   const user = JSON.parse(localStorage.getItem('user'));
   if (user) {
     const FullName = user.fullName; // Lấy Token
     const AccountID = user.accountID;
-    console.log('User:', FullName + ' accountID:', AccountID); // In ra Token để kiểm tra
+    console.log('User:', FullName + ' accountID:', AccountID); // In ra Token để kiểm tra huy@email.com
   } else {
       console.log('Không có người dùng đăng nhập.');
   }
@@ -38,10 +40,8 @@ const ProductDetail = () => {
         setLoading(false);
       }
     };
-
     fetchProduct();
   }, [id]);
-
   useEffect(() => {
     const fetchIsFavorite = async () => {
         const productID = id;
@@ -51,8 +51,22 @@ const ProductDetail = () => {
     if(user != null){
       fetchIsFavorite();
     }
-      
   }, );
+
+  useEffect(() => {
+    const fetchQuestions = async () => {
+        try {
+            const response = await AccountService.GetAnswersByProductId(id);
+            setQuestions(response.data);
+        } catch (err) {
+          
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+    fetchQuestions();
+}, [id]);
 
 
    const handleAddToCart = async (accountID, productID, quantity) => {
@@ -64,6 +78,7 @@ const ProductDetail = () => {
         message.error('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng.');
       }
     } catch (error) {
+      console.log(error);
       message.error('Có lỗi khi thêm sản phẩm vào giỏ hàng.');
     } finally {
       setLoading(false);
@@ -89,6 +104,32 @@ const ProductDetail = () => {
     }
 };
 
+const handleSubmit = async (values) => {
+  // Construct the answer object using form values and user session data
+  const answer = {
+    fullnameAnswer: user?.fullName || values.fullnameAnswer, // Use user fullname or form value
+    emailAnswer: user?.email || values.emailAnswer, // Use user email or form value
+    descriptionAnswer: values.descriptionAnswer,
+    productID: id, // Ensure this is passed if needed
+    accountID: user?.accountID,
+  };
+  
+  try {
+    const response = await AccountService.addAnswer(answer);
+    
+    if (response.data) {
+      // Success: Reset form and show success message
+      alert('Bình luận đã được gửi!');
+      form.resetFields(); // Reset the form
+    } else {
+      alert('Có lỗi xảy ra.');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Có lỗi khi gửi bình luận.');
+  }
+};
+
   if (loading) {
     return (
       <Spin spinning={true} tip="Đang tải...">
@@ -98,11 +139,10 @@ const ProductDetail = () => {
   }
 
   if (error) {
-    return <Alert message="Có lỗi xảy ra" type="error" />;
+    console.log("Chưa có câu hỏi nào",error);
   }
 
   return (
-  
     product && (
       <div>
       <Card
@@ -173,15 +213,53 @@ const ProductDetail = () => {
              </Row>
           </Col>
         </Row>
-       
       </Card>
 
+      <h3>Câu hỏi & Bình luận của người dùng</h3>
+      <ul>
+          {questions.length != null ? (
+              questions.map((question) => (
+                  <li key={question.answerID}>
+                      <p><strong>{question.fullnameAnswer}</strong>: {question.descriptionAnswer}</p>
+                      <p>Email: {question.emailAnswer}</p>
+                      <p>Ngày: {new Date(question.date).toLocaleString()}</p>
+                  </li>
+              ))
+          ) : (
+              <p>Chưa có câu hỏi nào cho sản phẩm này.</p>
+          )}
+      </ul>
+
+      <Form form={form} onFinish={handleSubmit}>
+      {user && (
+        <>
+         <Form.Item
+            label="Họ và tên"
+            name="fullnameAnswer" // This binds the fullnameAnswer field
+            initialValue={user?.fullName} // Set the initial value from user session data
+            rules={[{ required: true, message: 'Họ và tên là bắt buộc' }]} // Validation rule
+          >
+            <Input disabled={true} />
+          </Form.Item>
+          <Form.Item label="Bình luận" name="descriptionAnswer" required>
+            <Input.TextArea
+              value={descriptionAnswer}
+              onChange={(e) => setDescriptionAnswer(e.target.value)}
+              rows={4}
+              placeholder="Nhập bình luận"
+            />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Gửi bình luận
+            </Button>
+          </Form.Item>
+        </>
+      )}
       
+    </Form>
+
       <Service/>
-     
-      <h1>Hoa Kiểng Độc Lạ Việt Nam</h1>
-      {/* sp chính về hoa kiểng Độc lạ*/}
-      <ProductHomeUserComponentDocla/>
       </div>
     )
    

@@ -57,6 +57,24 @@ GetNotiByaccountID: async (accountID) => {
   }
 },
 // Lấy GetAllNoti
+GetAnswersByProductId: async (productID) => {
+  try {
+    const response = await axios.get(`${API_URL}/answers/${productID}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data; // Dữ liệu trả về từ API
+  } catch (error) {
+    if (error.response) {
+      console.error("Có lỗi khi lấy GetAnswersByProductId:", error.response.data);
+    } else {
+      console.error("Có lỗi khi lấy GetAnswersByProductId:", error);
+    }
+    throw error;
+  }
+},
+// Lấy GetAllNoti
 GetAllNewpaper: async () => {
   try {
     const response = await axios.get(`${API_URL}/GetAllNewpaper`, {
@@ -94,32 +112,42 @@ GetAllNewpaper: async () => {
         throw error;
     }
 },
+addAnswer: async (answer) => {
+  try {
+    const response = await axios.post(`${API_URL}/add-answer`, answer, {
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+    return response.data; 
+} catch (error) {
+  if (error.response) {
+      console.error("Có lỗi khi bình luận:", error.response.data);
+  } else {
+      console.error("Có lỗi khi bình luận:", error);
+  }
+  throw error;
+}
 
-//   // Cập nhật số lượng sản phẩm trong giỏ hàng
-//   updateCartItemQuantity: async (accountID, productID, quantity) => {
-//     try {
-//       const response = await axios.post(`${API_URL}/UpdateToCart`, {
-//         accountID,
-//         productID,
-//         quantity,
-//       },{
-//         headers: {
-//             'Content-Type': 'application/json',
-//         },
-//       });
-//       return response.data;
-//       } catch (error) {
-//         if (error.response) {
-//             console.error("Có lỗi cập nhật giỏ hàng:", error.response.data);
-//         } else {
-//             console.error("Có lỗi khi cập nhật giỏ hàng:", error);
-//         }
-//         throw error;
-//     }
-//   },
-
-  
-  
+},
+updateUser: async (accountID, account) => {
+  try {
+    const response = await axios.put(`${API_URL}/updateUser/${accountID}`, account, {
+        headers: { 
+            'Content-Type': 'multipart/form-data', 
+         },
+    });
+    console.log("Sửa thành công:", response.data); 
+    return response.data; // Dữ liệu trả về từ API
+  } catch (error) {
+    if (error.response) {
+      console.error("Có lỗi khi lấy updateUser:", error.response.data);
+    } else {
+      console.error("Có lỗi khi lấy updateUser:", error);
+    }
+    throw error;
+  } 
+},
 
 };
 

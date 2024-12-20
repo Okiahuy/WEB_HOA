@@ -11,7 +11,7 @@ const Dashboard = () => {
   const [totalUsers, settotalUsers] = useState([]);
   const [totalPrice, settotalPrices] = useState([]);
   const [totalAccess, settotalAccess] = useState([]);
-  const [cpuavg, setcpuavgs] = useState([]);
+  const [requestTime, setrequestTimes] = useState([]);
   const [mid, setmids] = useState();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -61,10 +61,9 @@ const Dashboard = () => {
           // Gán giá trị vào state nếu tất cả đều hợp lệ
           setmids(response.data);
           if (
-              typeof data.totalAccess === 'number' &&
-              typeof data.cpuavg === 'number') {
+              typeof data.totalAccess === 'number') {
                 settotalAccess(data.totalAccess);
-                setcpuavgs(data.cpuavg);
+                setrequestTimes(data.requestTime);
           } else {
             throw new Error('Dữ liệu không hợp lệ - Một số thuộc tính không đúng định dạng');
           }
@@ -87,8 +86,8 @@ const Dashboard = () => {
     { title: 'Tên api', dataIndex: 'apiName', key: 'apiName' },
     { title: 'Lượt truy cập', dataIndex: 'requestCount', key: 'requestCount' },
     { title: 'Trạng thái', dataIndex: 'status', key: 'status' },
-    { title: 'CUP', dataIndex: 'cpuUsage', key: 'cpuUsage' },
-    { title: 'Thời gian', dataIndex: 'requestTime', key: 'requestTime' },
+    { title: 'CPU', dataIndex: 'cpuUsage', key: 'cpuUsage' },
+    { title: 'Thời gian(ms)', dataIndex: 'requestTime', key: 'requestTime' },
 ];
 
 
@@ -100,6 +99,7 @@ const Dashboard = () => {
     )
   }
 
+  
   if (error) {
     return <Alert message="Lỗi" description={error} type="error" showIcon />;
   }
@@ -150,7 +150,7 @@ const Dashboard = () => {
       </Col>
 
       <Col span={7} >
-        <h2 style={{ marginTop: '24px' }}>Tổng lượt truy cập</h2>
+        <h2 style={{ marginTop: '24px' }}>Tổng lượt truy cập web site</h2>
         <ResponsiveContainer width="100%" height={300}>
           <Card style={{ backgroundColor: '#2c3e50', borderColor: 'white', width:'300px',  height:'300px', color: 'white', fontSize:'25px',borderRadius:'50%',textAlign:'center',alignContent:'center' }}>
             <p>{totalAccess.toLocaleString()} lượt</p>
@@ -158,10 +158,11 @@ const Dashboard = () => {
         </ResponsiveContainer>
       </Col>
       <Col span={7}>
-        <h2 style={{ marginTop: '24px' }}>Mức sử dụng CPU trung bình</h2>
+        <h2 style={{ marginTop: '24px' }}>Thời gian request trung bình</h2>
         <ResponsiveContainer width="100%" height={300}>
           <Card style={{ backgroundColor: '#2c3e50', borderColor: 'white', width:'300px', height:'300px', color: 'white', fontSize:'25px',borderRadius:'50%',textAlign:'center',alignContent:'center'  }}>
-              <p>{cpuavg.toLocaleString()} %</p>
+          <p>{(requestTime / 1000).toFixed(10)} s</p>
+
             </Card>
         </ResponsiveContainer>
       </Col>

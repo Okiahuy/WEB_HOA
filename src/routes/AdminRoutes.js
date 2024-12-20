@@ -11,6 +11,7 @@ import OrderList from '../components/Admin/OrderAdmin/OrderList';
 import OrderPrintPage from '../components/Admin/OrderAdmin/OrderPrintPage';
 import TypeAdmin from '../pages/Admin/TypeAdmin';
 import CustomerAdmin from '../pages/Admin/CustomerAdmin';
+import InvoiceList from '../components/Admin/OrderAdmin/InvoiceList';
 
 const AdminRoutes = () => {
   return (
@@ -23,6 +24,7 @@ const AdminRoutes = () => {
       <Route path="productlist-dungcu" element={<AdminProductListdungcu />} />
       <Route path="healthcheck-product" element={<HealthCheck />} />
       <Route path="order" element={<OrderList />} />
+      <Route path="invoice" element={<InvoiceList />} />
       <Route path="/order-print/:id" element={<OrderPrintPage />} />
       <Route path="category" element={<CategoryAdmin />} />
       <Route path="type" element={<TypeAdmin />} />

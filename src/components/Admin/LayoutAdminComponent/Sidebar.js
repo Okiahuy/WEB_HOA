@@ -2,7 +2,6 @@ import React from 'react';
 import { Layout, Menu} from 'antd';
 import { Link} from 'react-router-dom';
 import {
-  UsbTwoTone,
   DashboardOutlined,
   SettingOutlined,
   OrderedListOutlined,
@@ -34,10 +33,7 @@ const Sidebar = () => {
                 {
                 key: '1',
                 icon: <DashboardOutlined />,
-                label: <Link 
-                            to="/admin/dashboard"
-                           
-                            >TRANG CHỦ</Link>,
+                label: <Link to="/admin/dashboard">TRANG CHỦ</Link>,
                 },
                 {
                 key: '2',
@@ -73,17 +69,22 @@ const Sidebar = () => {
                 label: <Link to="/admin/supplier">NHÀ CUNG CẤP</Link>,
                 },
                 {
-                key: '5',
-                icon: <CalculatorTwoTone />,
-                label: <Link to="/admin/order">ĐƠN HÀNG</Link>,
+                  key: '5',
+                  icon: <CalculatorTwoTone />,
+                  label: 'ĐƠN HÀNG',
+                  children: [
+                    {
+                      key: '5-1',
+                      label: <Link to="/admin/order">ĐƠN HÀNG</Link>,
+                    },
+                    {
+                      key: '5-2',
+                      label: <Link to="/admin/invoice">HÓA ĐƠN</Link>,
+                    },
+                  ],
                 },
                 {
                 key: '6',
-                icon: <UsbTwoTone />,
-                label: <Link to="/admin/answer">CÂU HỎI</Link>,
-                },
-                {
-                key: '7',
                 icon: <ProfileOutlined/>,
                 label: <Link to="/admin/customer">KHÁCH HÀNG</Link>,
                 },

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, Button, message, Modal, Select, Spin, Table, Tag } from 'antd';
+import { Button, message, Modal, Select, Spin, Table, Tag } from 'antd';
 import OrderService from '../../../services/orderService';
 import addressService from '../../../services/addressService';
 import { useNavigate } from 'react-router-dom';
@@ -97,8 +97,57 @@ const OrderHistory = () => {
       console.error(error.message); // Ghi log lỗi nếu cần
     }
 };
+  // Chức năng cập nhật trạng thái đơn hàng
+const handleCancelOrder = (orderId) => {
+  Modal.confirm({
+    title: 'Xác nhận hủy đơn hàng',
+    content: 'Bạn có chắc chắn muốn hủy đơn hàng này không?',
+    onOk: async () => {
+      try {
+        const response = await OrderService.updateStatus_Order(orderId, 5);
+        if (response.data) {
+          message.success('Đơn hàng đã được hủy thành công');
+          const response1 = await OrderService.getOrderByaccountID(accountID);
+          setOrders(response1.data);
+        }
+      } catch (error) {
+        message.error('Hủy đơn hàng thất bại');
+        console.error(error);
+      }
+    },
+  });
+};
+ // Chức năng cập nhật trạng thái đơn hàng
+ const handleTakeOrder = (orderId) => {
+  Modal.confirm({
+    title: 'Nhận hàng',
+    content: 'Bạn có chắc chắn muốn nhận đơn hàng này không?',
+    onOk: async () => {
+      try {
+        const response = await OrderService.updateStatus_Order(orderId, 4);
+        if (response.data) {
+          message.success('Đơn hàng đã được nhận thành công');
+          const response1 = await OrderService.getOrderByaccountID(accountID);
+          setOrders(response1.data);
+        }
+      } catch (error) {
+        message.error('Nhận đơn hàng thất bại');
+        console.error(error);
+      }
+    },
+  });
+};
 
-  
+const getStatusLabel = (status) => {
+  switch (status) {
+    case 1: return 'Mới';
+    case 2: return 'Đã Duyệt';
+    case 3: return 'Đang giao';
+    case 4: return 'Đã nhận';
+    case 5: return 'Đã hủy';
+    default: return 'Không xác định';
+  }
+};
   const getPaymentMethod = (paymentID) => {
     switch (paymentID) {
       case 1:
@@ -121,7 +170,7 @@ const OrderHistory = () => {
   }
 
   if (error) {
-    return <Alert message="Có lỗi xảy ra" type="error" />;
+    console.log("Chưa có đơn hàng nào",error);
   }
 
   const columns = [
@@ -158,16 +207,51 @@ const OrderHistory = () => {
       key: 'tong',
       render: (tong, record) => {
         let color = 'green';
+        const isDelivering = record.status_order === 3 || record.status_order === 4 || record.status_order === 5; // Kiểm tra nếu đơn hàng đang giao
         return (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Tag color={color} style={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {tong}
             </Tag>
-            <Button type="link" onClick={() => handleChangeAddress(record.id)}>Đổi địa chỉ</Button>
+            {/* Disable the button if the order is being delivered */}
+            <Button 
+              type="link" 
+              onClick={() => handleChangeAddress(record.id)} 
+              disabled={isDelivering}  // Disable if the order is in "Đang giao" status
+              style={{ color: isDelivering ? 'gray' : 'blue' }} // Change button color when disabled
+            >
+              {isDelivering ? 'Không thể đổi địa chỉ' : 'Đổi địa chỉ'}
+            </Button>
+          </div>
+        );
+      },
+    }
+    ,
+    {
+      title: 'Trạng Thái',
+      dataIndex: 'status_order',
+      key: 'status_order',
+      render: (status_order, record) => {
+        const canCancel = status_order === 1; // Chỉ trạng thái 1
+        const isDelivering = status_order === 3; // Chỉ trạng thái 3
+        return (
+          <div style={{width:'200px', alignItems:'center'}}>
+            {getStatusLabel(status_order)} {/* Hàm chuyển đổi trạng thái thành label */}
+            {canCancel && (
+              <Button style={{width:'50%'}} danger onClick={() => handleCancelOrder(record.id)}>
+                Hủy
+              </Button>
+            )}
+            {isDelivering && (
+              <Button style={{width:'50%'}} onClick={() => handleTakeOrder(record.id)}>
+                Nhận
+              </Button>
+            )}
           </div>
         );
       },
     },
+    
     {
       title: 'Xem Chi Tiết',
       key: 'details',
@@ -185,7 +269,14 @@ const OrderHistory = () => {
   return (
     <div>
       <h2>Lịch sử Đặt Hàng</h2>
-      <Table columns={columns} dataSource={orders} pagination={{ pageSize: 10 }}/>
+      {orders != null ? (
+        <Table columns={columns} dataSource={orders} pagination={{ pageSize: 10 }}/>
+      ):(
+        <h2>Chưa có đơn hàng nào!</h2>
+      )
+      }
+      
+
       <Modal
           title="Đổi địa chỉ"
           visible={isAddressModalVisible}

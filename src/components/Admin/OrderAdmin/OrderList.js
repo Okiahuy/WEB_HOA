@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, message, Select, Spin, Table } from 'antd';
 import OrderService from '../../../services/orderService';
-import { EyeOutlined, PrinterOutlined } from '@ant-design/icons';
+import { PrinterOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 const { Option } = Select;
 
@@ -105,6 +105,7 @@ const getStatusLabel = (status) => {
       title: 'Tổng Tiền',
       dataIndex: 'totalPrice',
       key: 'totalPrice',
+      render: (totalPrice) => `${totalPrice.toLocaleString()} VND`,
     },
     {
       title: 'Phương Thức Thanh Toán',
@@ -117,18 +118,6 @@ const getStatusLabel = (status) => {
         dataIndex: 'addressName',
         key: 'addressName',
       },
-    {
-      title: 'Chi Tiết',
-      key: 'details',
-      render: (_, record) => (
-        <Button
-            style={{ background: 'white', }}
-            onClick={() => navigate(`/orderDetail/${record.id}`)}
-        >
-         <EyeOutlined/>
-        </Button>
-      ),
-    },
     {
         title: 'Trạng Thái',
         dataIndex: 'status_order',

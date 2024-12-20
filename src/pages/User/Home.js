@@ -25,6 +25,7 @@ const Home = () => {
       <ProductHomeUserComponentDocla/>
 
       <News/>
+      
     </div>
     
   );

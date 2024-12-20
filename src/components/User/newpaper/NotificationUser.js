@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, Spin, Table } from 'antd';
+import { Spin, Table } from 'antd';
 import AccountService from '../../../services/accountService';
 import moment from 'moment';
 
@@ -45,7 +45,7 @@ const NotificationUser = () => {
   }
 
   if (error) {
-    return <Alert message="Có lỗi xảy ra" type="error" />;
+    console.log(error);
   }
 
   const columns = [
@@ -67,7 +67,13 @@ const NotificationUser = () => {
 
   return (
     <div>
-      <Table columns={columns} dataSource={notification} pagination={false}/>
+      {notification != null ?(
+        <Table columns={columns} dataSource={notification} pagination={false}/>
+      ):(
+        <h5>Chưa có tin nhắn</h5>
+      )
+      }
+      
      
     </div>
   );
